@@ -89,7 +89,14 @@ h1,h2,h3,.cover span{font-family:Fredoka,"Trebuchet MS",system-ui,sans-serif}
 :root{--logo:url('image.png')}
 
 .cover{position:relative}
-.logo{width:150px;height:150px;margin:0 auto 4px;background:var(--logo) center/contain no-repeat;animation:bob 3.2s ease-in-out infinite;filter:drop-shadow(0 8px 10px rgba(230,51,87,.2))}
+.logo{
+  width: 180px;            /* Ukuran diperbesar sedikit (sebelumnya 150px) */
+  height: 180px;           /* Ukuran diperbesar sedikit (sebelumnya 150px) */
+  margin: 0 auto -15px;    /* Jarak ke tulisan Autumn Reads didekatkan (sebelumnya 4px) */
+  background: var(--logo) center/contain no-repeat;
+  animation: bob 3.2s ease-in-out infinite;
+  filter: drop-shadow(0 8px 10px rgba(230,51,87,.2));
+}
 @keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8px) rotate(3deg)}}
 .stat{display:inline-block;margin-top:14px;background:var(--card);border:2px dashed var(--line);border-radius:999px;padding:6px 16px;font-size:14px;font-weight:700;color:var(--green)}
 .tile{background:color-mix(in srgb,var(--tc) 24%,var(--card))}
