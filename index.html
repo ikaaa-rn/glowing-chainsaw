@@ -1,103 +1,157 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Autumn Reads</title>
+  <title>Autumn Reads 🍂</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap">
-  <!-- Import Supabase JS Library -->
+  <!-- Supabase JS Library -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style id="st">
     :root{--bg:#fff0f3;--card:#fffafb;--ink:#4a1d2a;--mute:#a4687b;--line:#f6c9d4;--accent:#e63357;--accent-ink:#fff;--green:#4e9b5c;--blue:#7cc0ee;--shadow:0 4px 14px rgba(230,51,87,.14)}
     @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2a0e17;--card:#3b1824;--ink:#ffe8ee;--mute:#dba5b4;--line:#5c2a3a;--accent:#ff6f8c;--accent-ink:#3a0b16;--green:#8fd69a;--blue:#8cc8f0;--shadow:0 4px 14px rgba(0,0,0,.4)}}
+    :root[data-theme="dark"]{--bg:#2a0e17;--card:#3b1824;--ink:#ffe8ee;--mute:#dba5b4;--line:#5c2a3a;--accent:#ff6f8c;--accent-ink:#3a0b16;--green:#8fd69a;--shadow:0 4px 14px rgba(0,0,0,.4)}
     *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--ink);font-family:Nunito,system-ui,sans-serif;background-image:radial-gradient(var(--line) 1.6px,transparent 1.6px);background-size:24px 24px}
-    h1,h2,h3{font-family:Fredoka,system-ui,sans-serif;margin:0}
-    .wrap{max-width:960px;margin:0 auto;padding:28px 18px 60px}
+    html{scroll-padding-top:env(safe-area-inset-top,0px)}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Nunito,"Trebuchet MS",system-ui,sans-serif;background-image:radial-gradient(var(--line) 1.6px,transparent 1.6px);background-size:24px 24px}
+    h1,h2,h3,.cover span{font-family:Fredoka,"Trebuchet MS",system-ui,sans-serif;margin:0;line-height:1.15}
+    .wrap{max-width:960px;margin:0 auto;padding:28px 18px 60px;position:relative;z-index:1}
     .hero{text-align:center;padding:26px 0 30px}
-    .hero h1{font-size:clamp(34px,7vw,52px);background:linear-gradient(90deg,var(--accent),var(--blue),var(--green));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .hero h1{font-size:clamp(34px,7vw,52px);font-weight:700;background:linear-gradient(90deg,var(--accent),var(--blue),var(--green));-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-.5px}
+    .hero p{max-width:440px;margin:12px auto 0;color:var(--mute)}
+    .hero .hi{font-size:clamp(17px,3.6vw,21px);font-weight:700;color:var(--ink);max-width:560px}
+    .hero .aes{font-size:13px;letter-spacing:.3px;line-height:1.8;max-width:560px}
+    .stat{display:inline-block;margin-top:14px;background:var(--card);border:2px dashed var(--line);border-radius:999px;padding:6px 16px;font-size:14px;font-weight:700;color:var(--green)}
     .tiles{display:grid;grid-template-columns:1fr;gap:10px;max-width:560px;margin:0 auto}
-    .tile{background:var(--card);border:2px solid var(--line);border-radius:26px;padding:12px 18px;cursor:pointer;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
-    .tile h2{font-size:18px;flex:1}.tile .n{color:var(--mute);font-size:13px}
-    .top{display:flex;align-items:center;gap:12px;margin-bottom:22px}.top h2{flex:1;color:var(--accent)}
+    .tile{background:color-mix(in srgb,var(--tc) 24%,var(--card));border:2px solid var(--line);border-radius:26px;padding:10px 18px;text-align:left;cursor:pointer;box-shadow:var(--shadow);color:inherit;font:inherit;transition:transform .15s;display:flex;align-items:center;gap:12px;width:100%}
+    .tile:nth-child(1){--tc:#ff7fa8}.tile:nth-child(2){--tc:#8cc8f0}.tile:nth-child(3){--tc:#f7d96a}.tile:nth-child(4){--tc:#8fd69a}
+    .tile:nth-child(odd){transform:rotate(-.4deg)}.tile:nth-child(even){transform:rotate(.4deg)}
+    .tile:hover{transform:translateY(-2px) rotate(0)}
+    .tile .ic{display:inline-block;font-size:24px;line-height:1}
+    .tile:hover .ic{animation:wig .5s}
+    @keyframes wig{25%{transform:rotate(-14deg) scale(1.2)}75%{transform:rotate(14deg) scale(1.2)}}
+    .tile h2{font-size:18px;margin:0;flex:1}.tile .n{color:var(--mute);margin:0;font-size:13px;white-space:nowrap}
+    .tile .n:last-child{color:var(--green);font-weight:700}
+    .top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+    .top h2{font-size:30px;flex:1;min-width:150px;color:var(--accent)}
     button{font:inherit;cursor:pointer}
-    .btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:10px 18px;font-weight:600}
+    .btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:10px 18px;font-weight:600;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+    .btn:active{transform:translateY(2px)}
     .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
     .btn.danger{background:transparent;color:#c0392b;border:1px solid var(--line)}
     .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:16px}
     .book{background:none;border:0;padding:0;text-align:left;color:inherit;cursor:pointer}
-    .cover{aspect-ratio:2/3;border-radius:8px 12px 12px 8px;overflow:hidden;box-shadow:var(--shadow);background:var(--line);display:flex;align-items:center;justify-content:center;position:relative}
-    .cover img{width:100%;height:100%;object-fit:cover}
-    .cover span{font-family:Fredoka,serif;font-size:44px;color:#fff;font-weight:700}
-    .book .t{font-weight:600;margin-top:8px;font-size:14px}.book .a{color:var(--mute);font-size:13px}
-    .stars{color:var(--accent)}
+    .cover{aspect-ratio:2/3;border-radius:8px 12px 12px 8px;overflow:hidden;box-shadow:var(--shadow);background:var(--line);display:flex;align-items:center;justify-content:center;border-left:4px solid var(--green);position:relative}
+    .cover img{width:100%;height:100%;object-fit:cover;display:block}
+    .cover span{font-size:44px;color:#fff;font-weight:700}
+    .book .t{font-weight:600;margin-top:8px;font-size:14px;line-height:1.3}
+    .book .a{color:var(--mute);font-size:13px}
+    .stars{color:var(--accent);letter-spacing:1px}
     .empty{text-align:center;color:var(--mute);padding:50px 10px;border:1.5px dashed var(--line);border-radius:16px}
-    dialog{border:1px solid var(--line);border-radius:18px;background:var(--card);color:var(--ink);padding:0;width:min(480px,94vw)}
+    .reviews{display:grid;gap:16px}
+    .rev{display:flex;height:260px;gap:16px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow);cursor:pointer;text-align:left;color:inherit;width:100%}
+    .rev .cover{width:84px;height:126px;flex:none}.rev .cover span{font-size:28px}
+    .rev .rev-content{min-width:0;flex:1}
+    .rev h3{font-size:19px;line-height:22px;height:44px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;overflow-wrap:anywhere}
+    .rev p{margin:8px 0 0;white-space:pre-wrap;color:var(--ink);line-height:22px;height:66px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;overflow-wrap:anywhere}
+    .rev .rev-pages{height:20px}
+    .rev .read-review{display:block;color:var(--accent);font-size:12px;font-weight:700;margin-top:6px}
+    .rev:hover{border-color:var(--accent)}
+    .pg{font-size:12px;color:var(--mute);font-weight:700;margin-top:2px}
+    .bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:4px}
+    .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:99px}
+    .stk{position:absolute;left:4px;top:4px;font-style:normal;font-size:16px;line-height:1;background:rgba(255,255,255,.88);border-radius:999px;padding:4px 5px;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+    .stks{display:flex;flex-wrap:wrap;gap:6px}
+    .stks button{width:38px;height:38px;border-radius:12px;border:2px solid var(--line);background:var(--bg);font-size:18px;padding:0;color:var(--mute)}
+    .stks button.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 18%,var(--card));transform:scale(1.08)}
+    dialog{border:1px solid var(--line);border-radius:18px;background:var(--card);color:var(--ink);padding:0;width:min(480px,94vw);max-height:92vh}
     dialog::backdrop{background:rgba(0,0,0,.5)}
     form{padding:22px;display:grid;gap:12px}
+    label{font-size:13px;color:var(--mute);display:grid;gap:5px}
     input,select,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;width:100%}
-    .foot{display:flex;gap:10px;justify-content:flex-end;margin-top:10px}
-    .note{color:var(--mute);font-size:12px;text-align:center;margin-top:20px}
-    #toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,30px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:700;opacity:0;transition:.25s;z-index:99;pointer-events:none}
+    input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+    textarea{min-height:110px;resize:vertical}
+    .row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1}
+    .pick{display:flex;gap:14px;align-items:center}.pick .cover{width:70px;flex:none}.pick .cover span{font-size:24px}
+    .rate{display:flex;gap:4px}
+    .rate button{background:none;border:0;font-size:28px;color:var(--line);padding:0 2px}
+    .rate button.on{color:var(--accent)}
+    .foot{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:6px}
+    .note{color:var(--mute);font-size:12px;text-align:center;margin-top:34px}
+    .lnk{background:none;border:0;padding:0 2px;color:var(--accent);font-weight:700;text-decoration:underline dotted}
+    #vb{padding:22px;overflow-wrap:anywhere}.vh{display:flex;gap:16px;margin-bottom:12px}.vh .cover{width:96px;flex:none}.vh h3{font-size:22px}
+    #toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:700;font-size:14px;opacity:0;transition:.25s;z-index:99;pointer-events:none}
     #toast.show{opacity:1;transform:translate(-50%,0)}
+    .fall{position:fixed;top:-8vh;pointer-events:none;z-index:0;opacity:.55;animation:fall linear infinite}
+    @keyframes fall{to{transform:translateY(115vh) rotate(360deg)}}
+    .logo{width:150px;height:150px;margin:0 auto 4px;background:url(data:image/webp;base64,UklGRlhHAABXRUJQVlA4WAoAAAAQAAAAEwEAewEAQUxQSHwZAAAB8Ib/v2o57f+93u+1ZiYJMdyiOERwy6e4u7tDDSd1w6GKFal7kwoVSmhxp8GtCe6ECHGbZGbOWuv9ujG299lnZn1uRsQEoH8v3qNz88jPnHXdHx9++dUX/nHVgWsB8IpcVwfAbX3qD+99ayl7+slfT10bcJpl6oChx/zyLWOXKcbUORrJT388HnCSXeKACTfNIskYYjL21GIkO367NeAyywHbTqmRMSRjkRbI1usHw+eUOKx7SwcZEou3SL62N5xkkwLHf0RGY7kWmL4ClUxyGPATMhi7tRhCiCnFEEI0645MiXdAJIscRvyXMbHrFCJ7G2N3tMCpTiWDHLZ5n4FdWjSSK5//w7c/d9whh598wXV/eWaOkRa7IWv8q6hkj8P4eQzsMpJ8/fZjR6DHa4z/4n/JlLphjb+Cl8xx2GIuIzsnY9uUfTwAOO+dc957JwBw0MNktK4YeA183ig2fIeRnSP5u20AeKfosagX4PBnyNiVBZ4ElzMiQ19kIElLfHlfwDlBkU4gn53H0AUtrRwPzRdx/n4GkjTjDQPgFIU7wYhpjF0w8bXBKtni8XMGkjSrnQE4lOqB7zNaJwZOhcsVh3MYSNKiHYsmQcmq+BqDdWLgeXB5ojJqWbJOgV9EE8oXj2sYurC0bJRoljhMZSDJwO+iCfUoHn9i6MTAP8PliMMOMRnJyLvhpS4gOvBFxk5MtgtclvyDkWSy2euIok4VYxdY6hR5DzQ/FONCIsnIQ+FRtx6HMXZiStvBZYfDHQwkI38Ljzr2+CVjp8Bf5YdgrUU0MqX566rWk+p6i1IiaVy6HiQzPD7HSDLyQnjUtcc3GUgy8AL4zBB5rlO0t1tU6kt08AeWSEY+DckLh93MSEaeCYc6dziCnWhxAjQzfsVAJnu7RaTe4HAfI8nAy+FzQrD2YhoZeT486k/2ZCIZ+SwkJzzOZiSNnw4TqT+IvshIGtvHQjNCcb9FMvAGOFTQ43OdGHkafD4oRqyikRbGQasgWHc5jQz8RU54nMNIRj4ORSUV0xjJxFdF8sHhTgtk4Ofhq+Hls52Mq0ZAc0GwxhwajSs3hFRDMXI1jUw8CC4XHHajkZH3QFFRxcOMZODX4HPB4zKGTmeKr4rHhQydpuSDw58YaGzdCFIVxWYdNCa+AMkF6EwmRj4GQWVFXmWiccEwSB4INmylMfBy+Op4/JqBxrQNNA8c/o9GJu4DV6XLGMjEQ+HywOMsBhpXrAepjsMxjGTgxfC5cC0DI18SQXUVO9I63ZIPUxgYOAWuUhuupDHyHrg8UDzGyMBvw1dIoG8yMfFliOSAQF5nYuTxcBWCwzQGJs4aiEwYModG487QKnncxEDj0rVzYb2lNOPK9SHVurCL1aOhOaAY00FLfKepWg5HMtKYtsmFLUmLfASKKismGLMj8BfwlRKsu4SWFdbpG5Vz7zLlxOg2WuSJFYPgSUZj3DIPBBsspxknwVXL488MxhUbQvJgncVMrG0GrdovOi0angtrL2LiouGQqt3IkPh+Uy4M+piB7zVX7zqGyBchyAN5mzU+B0HVLup0L1wWAHiFHbwPrnKnMQT+IhcUj7KdUyvncCRT4Lfg88Dh72zjzfCVO5gp8uRc8PgJ2/jtBnAIk3FnaC5cxTZObgCHM3LZupBcuIBt/FLlPI5nja+KZMNJbOPlDWAy2zgFDnnocAA7+KMG8DO28WL4bNiFgb+Dq5jgKUbuDJcJis1T4rSqCdZbTs4aCMkEwfrLyKch1XI4lh2cCodsGDSLfMtDKuXxK7bzdPhcAPA/csGwaglaPqC1bgzNBsWDtI6x0Co5TGLgY1Bko8cfWOPOcFXyuJZt/Bp8Tnyf7TysWiIvMaaJcDlxKdv5OfgKKbYKiTOdICdOYBuvqJTHl9jGH8FnhMOerPFnlVI8zsA94DJCsVVKnAZXHcXYNuMHAyAZIVh3Kfk8DoeF7LNfgKPrGh+j/ygBVIZxaOscX+4nIDgWXLF+tVRbNpu/HggJCsc/smYxkOr4vEVtvF2OGSlx61s5/5wVRF5gYF75MdX2M5z4SvisKNFvtkkyI0T2M6rK3Qr23g1fGY47MYaf18VkTUXMNW2hGaGYmSb8UlINTzOZwfvgyIzBQM/Ij9ogVRBtOl11ngkfG5AMJ1ctRG0Cg7HscY3mgTZ6TCVgTvBVUH1eXbwi/D54XE923kMfAUcDmOwWYNFcuRzbOfkSqg+xw5+BR756XAQ23lzFTyOYbC5w0QyRLGtRd4JV3/qXmEHvwyHDBVstIp8Alp3Hscz2MeDVfJkyFxyJupf3cvs4IXwyBP/FjlrEKTOPI5gsI8GiWQJBM+Ri9aqO8VT7OCl8MhTxcO0jlHQ+nLYn8HmDRPJFIc7GdPW9aZ4kh38Nhyy5ZescRJcXTkcymAL1hLJFY8fsp0H15c49zI7+G045Ms32M6T4evJ47Os2dxhIhnzBbbzgroSXXe+1XgBHLLV4Xi28/K6cvgjOzijSZEz+7Kdt9aTwzEMkXvDZYxiewZOhasb1XXmWo0/h0PWjGk3PgCtG48/scYPh6rmjGDtpeQLkHpxOIEh8AA45M3Aj8nXAakPlQ3mW413wCNz/DvkhwPqxeMe1vjuYJXckRnk/OF14vEVhsC94ZC5gmfI+WvWh8NeMdb4fXjkruJJcsk6daEYMZc1TvdOMugxWvtoaHniWp5mzRaNgSJ7He5iss3rQDymsBZ5CBxyaAojJ9ZBE65lqPFr8MiiX7DGveDK8jifocZfwyOHPb7HDu5XmscJjDU+0uQkk65hO48qy+OgWqrx9bWgyKRvso1nwJfisftK1jh7LBS5dCHby/KYuIg1Lt4WDtn0Bbbz7FI8tprDYKv2gMf/G3iM/4TB4iHwyKgL2c4zS/DY+VOGxJPhkVPfZhtPK85j0hLWjKfDI6uuYzsPhSuoCXssZ412Kjzy6qescY+iPA5qZY3tx8Ijqx3uYrStoYV4HN/BwNWHoAl5LXiWXL4+pAiPL5A1tu4Hj7wWDJxFvt9cSBMuYqpxyZ7wyGx1m3UYH9OmAppwDmPgJzvAI4tFVaUL8dib7fwZAKc9E49TRAW+vSk8clgdOqtXCHD005Zs/j/OXAdw0gNVXECr8f2R8MhhB7jR4zYbCsDpxveSpJGcd+NIQLtx0BtoNc7dCh45rBj9vRmtqWP2A18ZB/kfQyLJjg5y8VcUvguPEQ8x1vjJeDjksMPpC9ltvO8ORtK4dA5pHeTjW8IB4rHXLIbA/20KhxxuwtlkSGZmMZBMJANvHHLyv8kQuPR4OFGcXWMt8V/D4ZDDHtuvssRuLUaSTNwfwGceJ2vk+XC4kqyRVwAOOeyw/xwm9trSMUAT8NUO1hLP8n9nqnHxkVBBDjscXWNigWZ37Q54TPqYwVY9yxD49nh4ZLFih9WMLNj+uhOAzT9kImPkw+vDI4tFB/yPkQVHMv5+K2DEIksp8TcChzx2mMzA4iO5+vsbf2t1ssg/QRV5LDJsrqUSyEguJsnAO+CRyR6XMLJci0y0ZJw3GJJHIgPft1QSaWT7CrJ9DDSPPM5mZH0mfjRMJItEm2ZavUTeBpdHHqcysl7T8qsBzSCRljcs1Q3Ju4dD88fjbEbWrwW+uBFc7og0vWapVymGzskKIANf3xguczyOYGTPLSZ2H6wABs5YD5o3ivutF5HkrH9+b/Kl106ZaaQVwMDnh0FzRmVczdjjSLvzkCHoUnf4QWC03jHw0YHQjHH4MUNPLPGJXQE47713AC5eSabeMfDeZmi2CNZZROuBRV6vcE7QpajHqJMWMfWOgdOaoLni8WVG9jDwy1CHHiuw/Xym3jHwX03QPBEZ8B5TDyKvRZOgl9KMSW3ResfAe1qgWeJwIiO7T3wCXtD7JlzMWAAD/9OikiOKR60HZu0T4FCgOHmOsQDW+Hc4yQ/FttHYfeAf4VCow+FMRbDGW+Dzw+Mmhh4k7ikFibS8zVSEBX4ePjcEQ+YwdZf4fgukGHjcwlAELXbsCpcZHqcysvvIP8GhYIfjGQth4vtri+aF4hHrSeDV8EUpdmTRkf+Gl5xQjAvGHl1QnGDjVloxDLwePic8fsTQk8jzylhnaWEMPBE+HwSDZzP1JPDrxSm2DMVZWjkOmg0eJzOxZ7cW57AvjYVHzlhDJRcUD1rsUeR0SFFeJjMUx8DfwWeCYosO9tzYOlK0IMUDjCUw8Gy4PPD4BkPPGHkZfDEqm642K8PSsjGiWSDyLGMvEt8doFKIx22MLDXyHrgcUGxVM+sFI7+JpiIcxrUlK4eRx8H1ISLSoDwuZWBvLbbtCN871eZnGVlysg+GqPQN6p0AEOe9cyoNRnE/Y6+Y+OEoNPXGCX7PyNIjvw/fF4gCgGsWdKveqzQMwXpLab1j4ptbw7meqEfTbxlYvsXaTnCNT4Gdzv/d9Lfef336P2+97NidN/boLN5JQ3A4nIlFRi46DYB3KqLOKzD+CQbWY+KrLU4ancPwX7HnK9+a9r0zdl4LANRJ9Tx+yFAIE/nvfdDDTX+0ipH1Gfk9+AbnsN1MWggxpRRjCJFdL3jyR4euDUCdVEzwBGMxtEQ+f9VBW6w5fMSkC6etIiPr1GKcBNfQHE5YycCeW4ohsvP8v5++IQAnVRIMX0AriIxGsrZwQStJRmPdRr4+SKWBORxARhZqMSSSC/54cBPgpDoOO9FYYgqJJC1EYz0HXg/XuFTGzLfI4i1Gki9fvBaglfE4i6EMkmZmrHeLbVuKNi7cxcByLRr50eQBcFKZG0urZuRUuEblMC4mK4lkiuRL+wBaDcVDjA3IUsfWog3K4zYG1mMKjFcpvFRAZfBspgbEwDvgGpOg5SOmuiAT+cg4wNWXqIpgy0RrRGZL1hNtSA67JmO9WuSKbw+Ek3oRVQGAQSMuZ2JDjrwcviF5fJ2hbshIzjgY0HoQVQAYMvGMWx77JLFBm80ZKtKIHP7BWEe0QN42CK4kURUAfvOTf/z0Yjb0yIvgG5BAZzDVE5kSX9gGvgRRBYA19/jmfXNJ0mJKjSvZO81OG9GaC2j1RQYuOgpOihFVAG6zU342o4MkYzI29sRLINpwFJvX6o+R/BpEeycqAIbs+uV75pJkisbGb7by/BaoNBiH/6Ox/lPiTx1cz0QFwNoH/uDZVpIWk7HP/OcEQBqLx3GMFaAF3rcBvHQnCmDtQ26ZEUmmaOxDzTj78x7aYC5gqAIZ+OFBEO1CBBgw6bqXAsmYjH1tJP8wBioN5ZqqMJLxo5/3/13rQe491/36/44d+H28v8P) center/contain no-repeat;animation:bob 3.2s ease-in-out infinite;filter:drop-shadow(0 8px 10px rgba(230,51,87,.2))}
+    @keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8px) rotate(3deg)}}
+    @media (max-width:600px){.grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 8px}.grid .cover span{font-size:24px}.grid .stk{font-size:11px;padding:2px 3px;left:2px;top:2px}.book .t{font-size:12px;margin-top:5px;overflow-wrap:anywhere}.book .a,.grid .pg{font-size:10.5px}.grid .stars{font-size:10px;letter-spacing:0}}
   </style>
 </head>
 <body>
   <div class="wrap" id="app"></div>
 
-  <!-- Dialog Form Tambah/Edit Buku -->
+  <!-- Modal Dialog Edit Buku -->
   <dialog id="dlg">
-    <form id="f" onsubmit="return false">
-      <h3 id="dt">Buku Baru</h3>
-      <label>Judul <input id="title" required></label>
-      <label>Penulis <input id="author"></label>
-      <div style="display:flex;gap:10px">
-        <label style="flex:1">Halaman <input id="pages" type="number" min="1"></label>
-        <label style="flex:1">Posisi Hal <input id="cur" type="number" min="0"></label>
+    <form id="f" method="dialog" onsubmit="return false">
+      <h3 id="dt">A new book, yay! 📚</h3>
+      <div class="pick">
+        <div class="cover" id="pv"><span>📖</span></div>
+        <label style="flex:1">Cover photo 🖼️ <input type="file" id="file" accept="image/*"></label>
       </div>
-      <label>Status 
-        <select id="status">
-          <option value="read">Selesai Dibaca</option>
-          <option value="reading">Sedang Dibaca</option>
-          <option value="wish">Wishlist</option>
-        </select>
-      </label>
-      <label>Rating (1-5) <input id="rating" type="number" min="0" max="5"></label>
-      <label>Review <textarea id="review"></textarea></label>
+      <label>Title<input id="title" required></label>
+      <label>Author<input id="author"></label>
+      <div class="row">
+        <label>Total pages 📄 <input id="pages" type="number" min="1" inputmode="numeric" placeholder="320"></label>
+        <label id="curl">Current page<input id="cur" type="number" min="0" inputmode="numeric" placeholder="120"></label>
+      </div>
+      <label>Cover sticker 🏷️</label><div class="stks" id="stks"></div>
+      <label>Status <select id="status">
+        <option value="read">Finished 🏆</option>
+        <option value="reading">Currently reading 📖</option>
+        <option value="wish">Book wishlist 💭</option>
+      </select></label>
+      <div id="rwrap">
+        <label>Rating ⭐️</label>
+        <div class="rate" id="rate"></div>
+        <label style="margin-top:10px">My review ✍️ <textarea id="review" placeholder="The plot twist, the feelings, the favorite quotes—write it all here..."></textarea></label>
+      </div>
       <div class="foot">
-        <button class="btn danger" id="del" type="button">Hapus</button>
-        <button class="btn ghost" id="cancel" type="button">Batal</button>
-        <button class="btn" id="save" type="button">Simpan</button>
+        <button class="btn danger" id="del" type="button">Remove 🗑️</button>
+        <button class="btn ghost" id="cancel" type="button">Cancel</button>
+        <button class="btn" id="save" type="button">Save 💾</button>
       </div>
     </form>
   </dialog>
 
-  <!-- Dialog Login Owner -->
+  <dialog id="vdlg"><div id="vb"></div></dialog>
+
+  <!-- Modal Login Owner -->
   <dialog id="ldlg">
     <form id="lf" onsubmit="return false">
-      <h3>Login Owner</h3>
+      <h3>Owner Login 🔒</h3>
       <p id="lmsg" style="color:var(--accent);font-size:13px"></p>
-      <label>Email <input id="lemail" type="email"></label>
-      <label>Password <input id="lpass" type="password"></label>
+      <label>Email <input id="lemail" type="email" autocomplete="email" required></label>
+      <label>Password <input id="lpass" type="password" autocomplete="current-password" required></label>
       <div class="foot">
-        <button class="btn ghost" id="lcancel" type="button">Batal</button>
-        <button class="btn" id="lgo" type="submit">Masuk</button>
+        <button class="btn ghost" id="lcancel" type="button">Cancel</button>
+        <button class="btn" id="lgo" type="submit">Log in</button>
       </div>
     </form>
   </dialog>
 
   <script>
+    // ⚠️ ISI DENGAN PROJEC_URL & ANON_KEY DARI SUPABASE MILIKMU ⚠️
     const SUPABASE_URL = "https://zjvglbqchhpnkfflldsn.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqdmdsYnFjaGhwbmtmZmxsZHNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI4MDA2NDgsImV4cCI6MjEwODM3NjY0OH0.XWaHX_y9acEWBu4BwntPLoj_6XQ1m6PgAtqIOUDfIZA";
+    const SUPABASE_KEY = "sb_publishable_qWjoXTwUz35UclKTz5sarQ_sgJ733JW";
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let books = [], view = 'home', editing = null, user = null;
+    let books = [], view = 'home', editing = null, cover = '', rating = 0, stk = '', user = null;
 
-    function toast(m){
-      let e = document.getElementById('toast') || document.createElement('div');
-      e.id = 'toast'; e.textContent = m; document.body.appendChild(e);
-      e.className = 'show'; setTimeout(() => e.className = '', 3000);
-    }
+    const $ = s => document.querySelector(s);
+    function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+    function toast(t){let e=$('#toast')||document.createElement('div');e.id='toast';e.textContent=t;document.body.appendChild(e);e.className='show';clearTimeout(toast.t);toast.t=setTimeout(()=>e.className='',4000)}
 
     async function load() {
       const { data, error } = await sb.from('books').select('*').order('created_at', { ascending: false });
@@ -107,111 +161,179 @@
       render();
     }
 
-    function render() {
-      const app = document.getElementById('app');
-      if (view === 'home') {
-        app.innerHTML = `
-          <div class="hero">
-            <h1>Autumn Reads</h1>
-            <p>Selamat datang di rak buku pribadiku!</p>
-          </div>
-          <div class="tiles">
-            <button class="tile" onclick="go('read')"><h2>Finished</h2><div class="n">${books.filter(b=>b.status==='read').length} buku</div></button>
-            <button class="tile" onclick="go('reading')"><h2>Currently Reading</h2><div class="n">${books.filter(b=>b.status==='reading').length} buku</div></button>
-            <button class="tile" onclick="go('wish')"><h2>Wishlist</h2><div class="n">${books.filter(b=>b.status==='wish').length} buku</div></button>
-          </div>
-          <p class="note">
-            ${user ? `Status: Owner (${user.email}) <button onclick="logout()">Logout</button>` : `<button onclick="openLogin()">Login Owner</button>`}
-          </p>`;
+    const COLORS = ['#b4532a','#3d6b5e','#5b4b8a','#a1405a','#2f5d8a','#8a6d1f','#4d6a2f'];
+    function coverHTML(b){
+      if(b.cover) return '<div class="cover"><img alt="" src="'+esc(b.cover)+'">'+stkHTML(b)+'</div>';
+      let h=0, t=b.title||'?'; for(let i=0;i<t.length;i++) h=(h*31+t.charCodeAt(i))|0;
+      return '<div class="cover" style="background:'+COLORS[Math.abs(h)%COLORS.length]+'"><span>'+esc(t.charAt(0).toUpperCase())+'</span>'+stkHTML(b)+'</div>';
+    }
+    function stars(n){return n?'<span class="stars">'+'★'.repeat(n)+'☆'.repeat(5-n)+'</span>':''}
+    function stkHTML(b){return b.stk?'<em class="stk">'+esc(b.stk)+'</em>':''}
+    function plural(n,w){return n.toLocaleString('en-US')+' '+w+(n===1?'':'s')}
+    function pgHTML(b){
+      let p=+b.pages||0, c=+b.cur||0; if(!p) return '';
+      if(b.status==='reading'){
+        let pc=Math.min(100,Math.round(c/p*100));
+        return '<div class="pg">📖 '+c+'/'+p+' pages ('+pc+'%)</div><div class="bar"><i style="width:'+pc+'%"></i></div>';
+      }
+      return '<div class="pg">📄 '+plural(p,'page')+'</div>';
+    }
+
+    const SECTIONS = {
+      read:{name:'Finished',ic:'🏆',st:'read',empty:'No finished books yet — one chapter at a time!'},
+      review:{name:'Review',ic:'✍️',st:'read',empty:'No reviews yet — finished books with a review show up here.'},
+      reading:{name:'Currently Reading',ic:'📖',st:'reading',empty:'Nothing on the nightstand right now...'},
+      wish:{name:'Book Wishlist',ic:'💭',st:'wish',empty:'The wishlist is empty for now ✨'}
+    };
+
+    function list(k){
+      if(k==='review') return books.filter(b=>b.status==='read'&&b.review&&b.review.trim());
+      return books.filter(b=>b.status===SECTIONS[k].st);
+    }
+
+    function render(){
+      const a = $('#app');
+      if(view==='home'){
+        let h = `<div class="hero"><div class="logo" role="img" aria-label="Autumn Reads logo"></div><h1>Autumn Reads 🍂</h1>
+        <p class="hi">hello! 👋 this is my little bookish world 💕</p>
+        <p class="aes">✨ Chapter 1. Speaks in: Footnotes & Daydreams.<br>(Bookmark No. 4) Pressed petals between every page. 🌸</p>
+        <div class="stat">📚 ${plural(books.filter(b=>b.status==='read').length,'book')} finished • ${plural(books.filter(b=>b.status==='read').reduce((s,b)=>s+(+b.pages||0),0),'page')} read</div></div><div class="tiles">`;
+        
+        ['read','review','reading','wish'].forEach(k=>{
+          h += `<button class="tile" onclick="go('${k}')"><div class="ic">${SECTIONS[k].ic}</div><h2>${SECTIONS[k].name}</h2><div class="n">${plural(list(k).length,'book')} ➔</div></button>`;
+        });
+        
+        a.innerHTML = h + `</div><p class="note" style="margin-top:20px">${user ? `Owner mode 🔑 (${esc(user.email)}) • <button class="lnk" onclick="logout()">Log out</button>` : `Thanks for peeking at my shelf 🍂 <button class="lnk" onclick="openLogin()">Owner login</button>`}</p>`;
         return;
       }
 
-      const list = books.filter(b => b.status === view);
-      app.innerHTML = `
-        <div class="top">
-          <button class="btn ghost" onclick="go('home')">Kembali</button>
-          <h2>${view.toUpperCase()}</h2>
-          ${user ? `<button class="btn" onclick="openDlg()">+ Tambah Buku</button>` : ''}
-        </div>
-        ${!list.length ? `<div class="empty">Belum ada buku di kategori ini.</div>` : `
-          <div class="grid">
-            ${list.map(b => `
-              <button class="book" onclick="editBook('${b.id}')">
-                <div class="cover"><span>${b.title.charAt(0).toUpperCase()}</span></div>
-                <div class="t">${b.title}</div>
-                <div class="a">${b.author}</div>
-              </button>
-            `).join('')}
-          </div>
-        `}
-      `;
-    }
-
-    function go(v) { view = v; render(); }
-
-    function openLogin() { document.getElementById('ldlg').showModal(); }
-    document.getElementById('lcancel').onclick = () => document.getElementById('ldlg').close();
-    document.getElementById('lf').onsubmit = async () => {
-      const email = document.getElementById('lemail').value;
-      const password = document.getElementById('lpass').value;
-      const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      if (error) document.getElementById('lmsg').textContent = "Login gagal: " + error.message;
-      else { user = data.user; document.getElementById('ldlg').close(); render(); toast('Login berhasil!'); }
-    };
-
-    async function logout() { await sb.auth.signOut(); user = null; render(); toast('Sudah logout'); }
-
-    function openDlg(b = null) {
-      editing = b;
-      document.getElementById('dt').textContent = b ? 'Edit Buku' : 'Buku Baru';
-      document.getElementById('title').value = b?.title || '';
-      document.getElementById('author').value = b?.author || '';
-      document.getElementById('pages').value = b?.pages || '';
-      document.getElementById('cur').value = b?.cur || '';
-      document.getElementById('status').value = b?.status || view;
-      document.getElementById('rating').value = b?.rating || 0;
-      document.getElementById('review').value = b?.review || '';
-      document.getElementById('del').style.display = b ? 'inline-block' : 'none';
-      document.getElementById('dlg').showModal();
-    }
-
-    function editBook(id) {
-      const b = books.find(x => x.id === id);
-      if (user && b) openDlg(b);
-    }
-
-    document.getElementById('cancel').onclick = () => document.getElementById('dlg').close();
-    document.getElementById('save').onclick = async () => {
-      const title = document.getElementById('title').value.trim();
-      if (!title) return;
-      const payload = {
-        title,
-        author: document.getElementById('author').value.trim(),
-        pages: parseInt(document.getElementById('pages').value) || 0,
-        cur: parseInt(document.getElementById('cur').value) || 0,
-        status: document.getElementById('status').value,
-        rating: parseInt(document.getElementById('rating').value) || 0,
-        review: document.getElementById('review').value.trim(),
-      };
-
-      if (editing) {
-        await sb.from('books').update(payload).eq('id', editing.id);
+      const S = SECTIONS[view], items = list(view);
+      let h = `<div class="top"><button class="btn ghost" onclick="go('home')">⬅ Back</button><h2>${S.ic} ${S.name}</h2>${user ? `<button class="btn" onclick="openDlg()">+ Add book</button>` : ''}</div>`;
+      
+      if(!items.length) h += `<div class="empty">${S.empty}</div>`;
+      else if(view==='review'){
+        h += `<div class="reviews">${items.map(b => `
+          <button class="rev" type="button" onclick="openView('${b.id}')">
+            ${coverHTML(b)}
+            <div class="rev-content">
+              <h3>${esc(b.title)}</h3>
+              <div class="a">${esc(b.author)}</div>
+              <div>${stars(b.rating)}</div>
+              <div class="rev-pages">${pgHTML(b)}</div>
+              <p>${esc(b.review)}</p>
+              <span class="read-review">Read full review ➔</span>
+            </div>
+          </button>
+        `).join('')}</div>`;
       } else {
-        payload.id = 'b' + Date.now();
-        await sb.from('books').insert([payload]);
+        h += `<div class="grid">${items.map(b => `
+          <button class="book" onclick="${user ? `editDlg('${b.id}')` : `openView('${b.id}')`}">
+            ${coverHTML(b)}
+            <div class="t">${esc(b.title)}</div>
+            <div class="a">${esc(b.author)}</div>
+            ${b.status==='read' ? `<div>${stars(b.rating)}</div>` : ''}
+            ${pgHTML(b)}
+          </button>
+        `).join('')}</div>`;
       }
-      document.getElementById('dlg').close();
-      load();
-      toast('Berhasil disimpan!');
+      a.innerHTML = h;
+    }
+
+    function go(v){ view=v; render(); window.scrollTo(0,0); }
+
+    function openView(id){
+      const b = books.find(x=>x.id===id); if(!b) return;
+      const LBL = {read:'Finished', reading:'Currently reading', wish:'Book wishlist'};
+      $('#vb').innerHTML = `<div class="vh">${coverHTML(b)}<div><h3>${esc(b.title)}</h3><div class="a">${esc(b.author)}</div><div>${b.status==='read'?stars(b.rating):''}</div>${pgHTML(b)}<div class="pg">🏷️ ${LBL[b.status]}</div></div></div>${b.review ? `<p style="white-space:pre-wrap;margin:0 0 8px">${esc(b.review)}</p>`:''}<div class="foot"><button class="btn" onclick="$('#vdlg').close()">Close</button></div>`;
+      $('#vdlg').showModal();
+    }
+
+    function drawRate(){ $('#rate').innerHTML=[1,2,3,4,5].map(i=>`<button type="button" onclick="setRate(${i})" class="${i<=rating?'on':''}">★</button>`).join(''); }
+    function setRate(n){ rating = rating === n ? 0 : n; drawRate(); }
+    function drawStk(){ $('#stks').innerHTML=['','🌸','🎀','⭐','☕','🕊️','🍂'].map(s=>`<button type="button" onclick="setStk('${s}')" class="${s===stk?'on':''}">${s||'❌'}</button>`).join(''); }
+    function setStk(s){ stk=s; drawStk(); drawPreview(); }
+    function drawPreview(){ $('#pv').outerHTML = coverHTML({title:$('#title').value||'?',cover:cover,stk:stk}).replace('class="cover"','class="cover" id="pv"'); }
+    function syncStatus(){ let s=$('#status').value; $('#rwrap').style.display=s==='read'?'block':'none'; $('#curl').style.display=s==='reading'?'grid':'none'; }
+
+    function openDlg(b=null){
+      editing = b || null; stk = b ? b.stk||'' : ''; cover = b ? b.cover||'' : ''; rating = b ? b.rating||0 : 0;
+      $('#dt').textContent = b ? 'Edit book 📝' : 'A new book, yay! 📚';
+      $('#title').value = b ? b.title : ''; $('#author').value = b ? b.author : '';
+      $('#status').value = b ? b.status : (SECTIONS[view] ? SECTIONS[view].st : 'read');
+      $('#review').value = b ? b.review||'' : ''; $('#pages').value = b&&b.pages ? b.pages : ''; $('#cur').value = b&&b.cur ? b.cur : ''; $('#file').value = '';
+      $('#del').style.display = b ? 'inline-block' : 'none';
+      drawRate(); drawStk(); drawPreview(); syncStatus(); $('#dlg').showModal();
+    }
+    function editDlg(id){ const b = books.find(x=>x.id===id); if(b) openDlg(b); }
+
+    $('#file').addEventListener('change', function(){
+      let f = this.files[0];
+      if(f){
+        let r = new FileReader();
+        r.onload = function(){
+          let im = new Image();
+          im.onload = function(){
+            let w=360, sc=Math.min(1,w/im.width), c=document.createElement('canvas');
+            c.width = Math.round(im.width*sc); c.height = Math.round(im.height*sc);
+            c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+            cover = c.toDataURL('image/jpeg', 0.82); drawPreview();
+          }; im.src = r.result;
+        }; r.readAsDataURL(f);
+      }
+    });
+
+    $('#title').addEventListener('input', drawPreview);
+    $('#status').addEventListener('change', syncStatus);
+    $('#cancel').onclick = () => $('#dlg').close();
+
+    $('#save').onclick = async function(){
+      let t = $('#title').value.trim(); if(!t){ $('#title').focus(); return; }
+      let st = $('#status').value, btn = this; btn.disabled = true;
+      let d = {
+        title: t, author: $('#author').value.trim(),
+        pages: Math.max(0, parseInt($('#pages').value)||0),
+        cur: st==='reading' ? Math.max(0, parseInt($('#cur').value)||0) : 0,
+        status: st, cover: cover, stk: stk,
+        rating: st==='read' ? rating : 0,
+        review: st==='read' ? $('#review').value.trim() : ''
+      };
+      if(editing){
+        await sb.from('books').update(d).eq('id', editing.id);
+      } else {
+        d.id = 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+        await sb.from('books').insert([d]);
+      }
+      btn.disabled = false; $('#dlg').close(); load(); toast('Saved 💾');
     };
 
-    document.getElementById('del').onclick = async () => {
-      if (editing && confirm('Hapus buku ini?')) {
+    $('#del').onclick = async function(){
+      if(editing && confirm('Remove this book from the shelf? 🗑️')){
         await sb.from('books').delete().eq('id', editing.id);
-        document.getElementById('dlg').close();
-        load();
+        $('#dlg').close(); load(); toast('Removed!');
       }
     };
+
+    function openLogin(){ $('#ldlg').showModal(); }
+    $('#lcancel').onclick = () => $('#ldlg').close();
+    $('#lf').onsubmit = async function(){
+      let email = $('#lemail').value, password = $('#lpass').value;
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      if(error) $('#lmsg').textContent = error.message;
+      else { user = data.user; $('#ldlg').close(); render(); toast('Welcome back owner! ✨'); }
+    };
+
+    async function logout(){ await sb.auth.signOut(); user = null; render(); toast('Logged out!'); }
+
+    // Hiasan Daun Gugur
+    (function(){
+      let em=['🍂','🌸','🍁'];
+      for(let i=0;i<10;i++){
+        let s=document.createElement('span'); s.className='fall'; s.textContent=em[i%em.length];
+        s.style.left=(Math.random()*96)+'vw'; s.style.fontSize=(14+Math.random()*16)+'px';
+        s.style.animationDuration=(14+Math.random()*14)+'s'; s.style.animationDelay=(-Math.random()*20)+'s';
+        document.body.appendChild(s);
+      }
+    })();
 
     load();
   </script>
