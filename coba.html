@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Autumn Reads</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap">
+  <!-- Import Supabase JS Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style id="st">
+    :root{--bg:#fff0f3;--card:#fffafb;--ink:#4a1d2a;--mute:#a4687b;--line:#f6c9d4;--accent:#e63357;--accent-ink:#fff;--green:#4e9b5c;--blue:#7cc0ee;--shadow:0 4px 14px rgba(230,51,87,.14)}
+    @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2a0e17;--card:#3b1824;--ink:#ffe8ee;--mute:#dba5b4;--line:#5c2a3a;--accent:#ff6f8c;--accent-ink:#3a0b16;--green:#8fd69a;--blue:#8cc8f0;--shadow:0 4px 14px rgba(0,0,0,.4)}}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Nunito,system-ui,sans-serif;background-image:radial-gradient(var(--line) 1.6px,transparent 1.6px);background-size:24px 24px}
+    h1,h2,h3{font-family:Fredoka,system-ui,sans-serif;margin:0}
+    .wrap{max-width:960px;margin:0 auto;padding:28px 18px 60px}
+    .hero{text-align:center;padding:26px 0 30px}
+    .hero h1{font-size:clamp(34px,7vw,52px);background:linear-gradient(90deg,var(--accent),var(--blue),var(--green));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .tiles{display:grid;grid-template-columns:1fr;gap:10px;max-width:560px;margin:0 auto}
+    .tile{background:var(--card);border:2px solid var(--line);border-radius:26px;padding:12px 18px;cursor:pointer;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
+    .tile h2{font-size:18px;flex:1}.tile .n{color:var(--mute);font-size:13px}
+    .top{display:flex;align-items:center;gap:12px;margin-bottom:22px}.top h2{flex:1;color:var(--accent)}
+    button{font:inherit;cursor:pointer}
+    .btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:10px 18px;font-weight:600}
+    .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+    .btn.danger{background:transparent;color:#c0392b;border:1px solid var(--line)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:16px}
+    .book{background:none;border:0;padding:0;text-align:left;color:inherit;cursor:pointer}
+    .cover{aspect-ratio:2/3;border-radius:8px 12px 12px 8px;overflow:hidden;box-shadow:var(--shadow);background:var(--line);display:flex;align-items:center;justify-content:center;position:relative}
+    .cover img{width:100%;height:100%;object-fit:cover}
+    .cover span{font-family:Fredoka,serif;font-size:44px;color:#fff;font-weight:700}
+    .book .t{font-weight:600;margin-top:8px;font-size:14px}.book .a{color:var(--mute);font-size:13px}
+    .stars{color:var(--accent)}
+    .empty{text-align:center;color:var(--mute);padding:50px 10px;border:1.5px dashed var(--line);border-radius:16px}
+    dialog{border:1px solid var(--line);border-radius:18px;background:var(--card);color:var(--ink);padding:0;width:min(480px,94vw)}
+    dialog::backdrop{background:rgba(0,0,0,.5)}
+    form{padding:22px;display:grid;gap:12px}
+    input,select,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;width:100%}
+    .foot{display:flex;gap:10px;justify-content:flex-end;margin-top:10px}
+    .note{color:var(--mute);font-size:12px;text-align:center;margin-top:20px}
+    #toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,30px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:700;opacity:0;transition:.25s;z-index:99;pointer-events:none}
+    #toast.show{opacity:1;transform:translate(-50%,0)}
+  </style>
+</head>
+<body>
+  <div class="wrap" id="app"></div>
+
+  <!-- Dialog Form Tambah/Edit Buku -->
+  <dialog id="dlg">
+    <form id="f" onsubmit="return false">
+      <h3 id="dt">Buku Baru</h3>
+      <label>Judul <input id="title" required></label>
+      <label>Penulis <input id="author"></label>
+      <div style="display:flex;gap:10px">
+        <label style="flex:1">Halaman <input id="pages" type="number" min="1"></label>
+        <label style="flex:1">Posisi Hal <input id="cur" type="number" min="0"></label>
+      </div>
+      <label>Status 
+        <select id="status">
+          <option value="read">Selesai Dibaca</option>
+          <option value="reading">Sedang Dibaca</option>
+          <option value="wish">Wishlist</option>
+        </select>
+      </label>
+      <label>Rating (1-5) <input id="rating" type="number" min="0" max="5"></label>
+      <label>Review <textarea id="review"></textarea></label>
+      <div class="foot">
+        <button class="btn danger" id="del" type="button">Hapus</button>
+        <button class="btn ghost" id="cancel" type="button">Batal</button>
+        <button class="btn" id="save" type="button">Simpan</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Dialog Login Owner -->
+  <dialog id="ldlg">
+    <form id="lf" onsubmit="return false">
+      <h3>Login Owner</h3>
+      <p id="lmsg" style="color:var(--accent);font-size:13px"></p>
+      <label>Email <input id="lemail" type="email"></label>
+      <label>Password <input id="lpass" type="password"></label>
+      <div class="foot">
+        <button class="btn ghost" id="lcancel" type="button">Batal</button>
+        <button class="btn" id="lgo" type="submit">Masuk</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    // MASUKKAN URL DAN PUBLIC KEY DARI SUPABASE DI SINI:
+    const SUPABASE_URL = "https://PROJECT_ID_KAMU.supabase.co";
+    const SUPABASE_KEY = "PUBLIC_ANON_KEY_KAMU";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let books = [], view = 'home', editing = null, user = null;
+
+    function toast(m){
+      let e = document.getElementById('toast') || document.createElement('div');
+      e.id = 'toast'; e.textContent = m; document.body.appendChild(e);
+      e.className = 'show'; setTimeout(() => e.className = '', 3000);
+    }
+
+    async function load() {
+      const { data, error } = await sb.from('books').select('*').order('created_at', { ascending: false });
+      if (!error) books = data || [];
+      const { data: { session } } = await sb.auth.getSession();
+      user = session?.user || null;
+      render();
+    }
+
+    function render() {
+      const app = document.getElementById('app');
+      if (view === 'home') {
+        app.innerHTML = `
+          <div class="hero">
+            <h1>Autumn Reads</h1>
+            <p>Selamat datang di rak buku pribadiku!</p>
+          </div>
+          <div class="tiles">
+            <button class="tile" onclick="go('read')"><h2>Finished</h2><div class="n">${books.filter(b=>b.status==='read').length} buku</div></button>
+            <button class="tile" onclick="go('reading')"><h2>Currently Reading</h2><div class="n">${books.filter(b=>b.status==='reading').length} buku</div></button>
+            <button class="tile" onclick="go('wish')"><h2>Wishlist</h2><div class="n">${books.filter(b=>b.status==='wish').length} buku</div></button>
+          </div>
+          <p class="note">
+            ${user ? `Status: Owner (${user.email}) <button onclick="logout()">Logout</button>` : `<button onclick="openLogin()">Login Owner</button>`}
+          </p>`;
+        return;
+      }
+
+      const list = books.filter(b => b.status === view);
+      app.innerHTML = `
+        <div class="top">
+          <button class="btn ghost" onclick="go('home')">Kembali</button>
+          <h2>${view.toUpperCase()}</h2>
+          ${user ? `<button class="btn" onclick="openDlg()">+ Tambah Buku</button>` : ''}
+        </div>
+        ${!list.length ? `<div class="empty">Belum ada buku di kategori ini.</div>` : `
+          <div class="grid">
+            ${list.map(b => `
+              <button class="book" onclick="editBook('${b.id}')">
+                <div class="cover"><span>${b.title.charAt(0).toUpperCase()}</span></div>
+                <div class="t">${b.title}</div>
+                <div class="a">${b.author}</div>
+              </button>
+            `).join('')}
+          </div>
+        `}
+      `;
+    }
+
+    function go(v) { view = v; render(); }
+
+    function openLogin() { document.getElementById('ldlg').showModal(); }
+    document.getElementById('lcancel').onclick = () => document.getElementById('ldlg').close();
+    document.getElementById('lf').onsubmit = async () => {
+      const email = document.getElementById('lemail').value;
+      const password = document.getElementById('lpass').value;
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) document.getElementById('lmsg').textContent = "Login gagal: " + error.message;
+      else { user = data.user; document.getElementById('ldlg').close(); render(); toast('Login berhasil!'); }
+    };
+
+    async function logout() { await sb.auth.signOut(); user = null; render(); toast('Sudah logout'); }
+
+    function openDlg(b = null) {
+      editing = b;
+      document.getElementById('dt').textContent = b ? 'Edit Buku' : 'Buku Baru';
+      document.getElementById('title').value = b?.title || '';
+      document.getElementById('author').value = b?.author || '';
+      document.getElementById('pages').value = b?.pages || '';
+      document.getElementById('cur').value = b?.cur || '';
+      document.getElementById('status').value = b?.status || view;
+      document.getElementById('rating').value = b?.rating || 0;
+      document.getElementById('review').value = b?.review || '';
+      document.getElementById('del').style.display = b ? 'inline-block' : 'none';
+      document.getElementById('dlg').showModal();
+    }
+
+    function editBook(id) {
+      const b = books.find(x => x.id === id);
+      if (user && b) openDlg(b);
+    }
+
+    document.getElementById('cancel').onclick = () => document.getElementById('dlg').close();
+    document.getElementById('save').onclick = async () => {
+      const title = document.getElementById('title').value.trim();
+      if (!title) return;
+      const payload = {
+        title,
+        author: document.getElementById('author').value.trim(),
+        pages: parseInt(document.getElementById('pages').value) || 0,
+        cur: parseInt(document.getElementById('cur').value) || 0,
+        status: document.getElementById('status').value,
+        rating: parseInt(document.getElementById('rating').value) || 0,
+        review: document.getElementById('review').value.trim(),
+      };
+
+      if (editing) {
+        await sb.from('books').update(payload).eq('id', editing.id);
+      } else {
+        payload.id = 'b' + Date.now();
+        await sb.from('books').insert([payload]);
+      }
+      document.getElementById('dlg').close();
+      load();
+      toast('Berhasil disimpan!');
+    };
+
+    document.getElementById('del').onclick = async () => {
+      if (editing && confirm('Hapus buku ini?')) {
+        await sb.from('books').delete().eq('id', editing.id);
+        document.getElementById('dlg').close();
+        load();
+      }
+    };
+
+    load();
+  </script>
+</body>
+</html>
